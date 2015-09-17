@@ -10,9 +10,13 @@ public class Main extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        MainFragment myFrag = new MainFragment();
+        StartFragment startFragment = new StartFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.cont, myFrag).commit();
+                .replace(R.id.fragment, startFragment).commit();
+
+        Notification_settings notification_settings = new Notification_settings();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, notification_settings).commit();
     }
 
 
