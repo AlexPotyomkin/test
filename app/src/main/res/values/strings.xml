@@ -2,5 +2,11 @@
     <string name="app_name">test</string>
     <string name="action_settings">Settings</string>
     <string name="Start">Start</string>
-    <string name="time_interval">Input interval</string>
+    <string name="time_interval">0:30</string>
+    <string name="Notification_text">Notification text</string>
+    <string name="Choose_img">Choose image</string>
+    <string name="Choose_sound">Choose sound</string>
+    <string name="sound">sound.mp3</string>
+    <string name="checkedstate">ON</string>
+    <string name="uncheckedstate">OFF</string>
 </resources>

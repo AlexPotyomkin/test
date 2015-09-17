@@ -51,31 +51,38 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageView2"
+        android:layout_alignStart="@+id/imageView2"
+        android:layout_below="@+id/imageView2"
         android:layout_marginTop="70dp"
         android:text="@string/sound"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_below="@+id/imageView2"
-        android:layout_alignLeft="@+id/imageView2"
-        android:layout_alignStart="@+id/imageView2"
-        android:textColor="@color/material_blue_grey_950"/>
+        android:textColor="@color/material_blue_grey_950" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/Choose_sound"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="45dp"
         android:layout_below="@+id/button2"
-        android:layout_marginTop="80dp" />
+        android:layout_marginRight="45dp"
+        android:layout_marginTop="80dp"
+        android:text="@string/Choose_sound" />
 
-    <ToggleButton
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:id="@+id/toggleButton"
+
+    <Switch
+        android:id="@+id/swtch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp" />
-
-
+        android:layout_marginBottom="50dp"
+        android:textColor="@color/material_grey_100"
+        android:textOff="@string/uncheckedstate"
+        android:textOn="@string/checkedstate"
+        android:textStyle="bold|italic"
+        android:thumb="@drawable/customswitchselector"
+        android:thumbTextPadding="15dp"
+        android:track="@drawable/customtrack"
+        android:typeface="sans" />
 </RelativeLayout>
