@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Тест</string>
+    <string name="Start">Старт</string>
+    <string name="Choose_img">Выбор изображения</string>
+    <string name="Choose_sound">Выбор мелодии</string>
+    <string name="sound">мелодия.mp3</string>
+    <string name="warning">Внимание</string>
+    <string name="notification_title">Заглавие уведомления</string>
+    <string name="hint_period">Введите период в формате: ЧЧ:MM:СС</string>
+    <string name="hint_notification_text">Введите текст уведомления</string>
+    <string name="action_settings">Настройки</string>
+    <string name="pick_ringtone">Выберите звук уведомления:</string>
+</resources>

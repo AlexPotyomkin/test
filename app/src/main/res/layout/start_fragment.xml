@@ -2,24 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_grey_300">
+    android:background="@color/bgColor">
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/ivStartIco"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="150dp"
+        android:src="@drawable/img1"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@color/bgColor"
-        android:src="@drawable/img1" />
+        android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+        android:id="@+id/btStart"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView"
-        android:layout_below="@+id/imageView"
-        android:layout_marginTop="81dp"
+        android:layout_below="@+id/ivStartIco"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
         android:text="@string/Start" />
 </RelativeLayout>
