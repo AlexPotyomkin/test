@@ -6,20 +6,20 @@
 
     <ImageView
         android:id="@+id/ivStartIco"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="75dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="150dp"
         android:src="@drawable/img1"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/btStart"
-        android:layout_width="125dp"
-        android:layout_height="50dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/ivStartIco"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:text="@string/Start" />
 
 </RelativeLayout>

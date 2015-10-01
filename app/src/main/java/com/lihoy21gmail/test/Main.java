@@ -1,8 +1,11 @@
 package com.lihoy21gmail.test;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,9 +13,11 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +30,7 @@ public class Main extends FragmentActivity {
     private Notification_settings notification_settings;
     private FragmentTransaction ft;
     private Intent ServiceIntent;
+    final String TAG = "myLogs";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,12 +41,18 @@ public class Main extends FragmentActivity {
         notification_settings = new Notification_settings();
         ServiceIntent = new Intent(this, NotificationService.class);
 
+        if (isMyServiceRunning(NotificationService.class))
+            Log.d(TAG, "Service is running");
+        else
+            Log.d(TAG, "Service isn't running");
+
         ft = getSupportFragmentManager().beginTransaction();
         if (getIntent().getIntExtra("Open_Notification_settings", 0) == 2)
             ft.add(R.id.fragment, notification_settings);
         else
             ft.add(R.id.fragment, startFragment);
         ft.commit();
+
 
     }
 
@@ -66,6 +78,8 @@ public class Main extends FragmentActivity {
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE,
                 getResources().getString(R.string.pick_ringtone));
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
         startActivityForResult(intent, PICK_RINGTONE_REQUEST);
     }
 
@@ -77,17 +91,25 @@ public class Main extends FragmentActivity {
                 if (resultCode == RESULT_OK) {
                     Bitmap galleryPic = null;
                     try {
-                        galleryPic = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        galleryPic = MediaStore.Images.Media.getBitmap(getContentResolver(),
+                                data.getData());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    ImageView ivNotificationIco = (ImageView) findViewById(R.id.ivNotificationIco);
-                    ivNotificationIco.setImageBitmap(galleryPic);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    assert galleryPic != null;
-                    galleryPic.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    ServiceIntent.putExtra("image", byteArray);
+
+                    if (getContentResolver().getType(data.getData()) != null) {
+                        ImageView ivNotificationIco = (ImageView) findViewById(R.id.ivNotificationIco);
+                        galleryPic = scaleDownBitmap(galleryPic, 64, this);
+                        ivNotificationIco.setImageBitmap(galleryPic);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        assert galleryPic != null;
+                        galleryPic.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+                        ServiceIntent.putExtra("image", byteArray);
+                    } else {
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getString(R.string.error_type), Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             case PICK_RINGTONE_REQUEST:
@@ -100,9 +122,12 @@ public class Main extends FragmentActivity {
                     int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
                     returnCursor.moveToFirst();
                     TextView tvChosenSound = (TextView) findViewById(R.id.tvChosenSound);
-                    tvChosenSound.setText(returnCursor.getString(nameIndex));
+                    try {
+                        tvChosenSound.setText(returnCursor.getString(nameIndex));
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
                     ServiceIntent.setData(ChosenSoundUri);
-
                 }
         }
     }
@@ -110,29 +135,59 @@ public class Main extends FragmentActivity {
     public void myStartService() {
         EditText etNotification = (EditText) findViewById(R.id.etNotification);
         if (etNotification.getText().length() == 0)
-            etNotification.setText("Notification text");
+            etNotification.setText(getResources().getString(R.string.default_notification_text));
         ServiceIntent.putExtra("Notification_text", etNotification.getText().toString());
 
         EditText etPeriod = (EditText) findViewById(R.id.etPeriod);
         String Text_period = etPeriod.getText().toString();
         StringTokenizer stk = new StringTokenizer(Text_period, ":");
-        int[] arPeriod = {0, 0, 30};
+        int[] arPeriod = {0, 0, 5};
         if (stk.countTokens() == 3) {
             for (int i = 0; i < arPeriod.length; i++)
                 arPeriod[i] = Integer.parseInt(stk.nextToken());
         } else
-            etPeriod.setText("00:00:30");
+            etPeriod.setText("00:00:05");
         if ((arPeriod[0] + arPeriod[1] + arPeriod[2]) == 0) {
-            arPeriod[0] = 0;
-            arPeriod[1] = 0;
-            arPeriod[2] = 30;
+            arPeriod[2] = 5;
             etPeriod.setText("00:00:30");
         }
         ServiceIntent.putExtra("period", arPeriod);
         startService(ServiceIntent);
     }
 
+    public boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void myStopService() {
         stopService(ServiceIntent);
     }
+
+    public static Bitmap scaleDownBitmap(Bitmap photo, int newHeight, Context context) {
+
+        final float densityMultiplier = context.getResources().getDisplayMetrics().density;
+        Log.d("myLog", "mult = " + densityMultiplier + "  w = " + photo.getWidth() + "  h = " + photo.getHeight());
+        int h = 0, w = 0;
+        if (photo.getHeight() >= photo.getWidth()) {
+            h = (int) (newHeight * densityMultiplier);
+            w = (int) (h * photo.getWidth() / ((double) photo.getHeight()));
+            photo = Bitmap.createScaledBitmap(photo, w, h, true);
+        } else {
+            w = (int) (newHeight * densityMultiplier);
+            h = (int) (w * photo.getHeight() / ((double) photo.getWidth()));
+            photo = Bitmap.createScaledBitmap(photo, w, h, true);
+            Matrix m = new Matrix();
+            m.preRotate(90, photo.getWidth() / 2, photo.getHeight() / 2);
+            photo = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), m, true);
+        }
+        Log.d("myLog", "new h = " + newHeight + "  w = " + w + "  h = " + h);
+        return photo;
+    }
+
 }

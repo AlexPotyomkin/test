@@ -1,7 +1,11 @@
 package com.lihoy21gmail.test;
 
+import android.database.Cursor;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class Notification_settings extends Fragment {
@@ -34,7 +39,7 @@ public class Notification_settings extends Fragment {
 
         if (Build.VERSION.SDK_INT >= 14) {
             Switch swtch = (Switch) v.findViewById(R.id.swtch);
-            if (getActivity().getIntent().getIntExtra("Open_Notification_settings", 0) == 2)
+            if(((Main) getActivity()).isMyServiceRunning(NotificationService.class))
                 swtch.setChecked(true);
             swtch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -46,7 +51,7 @@ public class Notification_settings extends Fragment {
             });
         } else {
             ToggleButton TB = (ToggleButton) v.findViewById(R.id.toggleButton);
-            if (getActivity().getIntent().getIntExtra("Open_Notification_settings", 0) == 2)
+            if(((Main) getActivity()).isMyServiceRunning(NotificationService.class))
                 TB.setChecked(true);
             TB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -57,6 +62,16 @@ public class Notification_settings extends Fragment {
                 }
             });
         }
+        TextView tvChosenSound = (TextView) v.findViewById(R.id.tvChosenSound);
+        Uri ChosenSoundUri = RingtoneManager.getActualDefaultRingtoneUri(
+                getActivity().getApplicationContext(), RingtoneManager.TYPE_RINGTONE);
+        Cursor returnCursor =
+                getActivity().getContentResolver().query(ChosenSoundUri, null, null, null, null);
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        tvChosenSound.setText(returnCursor.getString(nameIndex));
+
         return v;
     }
+
 }
