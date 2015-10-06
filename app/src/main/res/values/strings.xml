@@ -3,7 +3,6 @@
     <string name="app_name">test</string>
     <string name="Start">Start</string>
     <string name="Choose_sound">Choose sound</string>
-    <string name="sound">sound.mp3</string>
     <string name="warning">Waring</string>
     <string name="notification_title">Notification title</string>
     <string name="hint_notification_text">Input notification text</string>
