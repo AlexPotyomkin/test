@@ -39,39 +39,67 @@ public class Notification_settings extends Fragment {
 
         if (Build.VERSION.SDK_INT >= 14) {
             Switch swtch = (Switch) v.findViewById(R.id.swtch);
-            if(((Main) getActivity()).isMyServiceRunning(NotificationService.class))
+            if (((Main) getActivity()).isMyServiceRunning(NotificationService.class))
                 swtch.setChecked(true);
             swtch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked)
-                        ((Main) getActivity()).myStartService();
+                        ((Main) getActivity()).StartService();
                     else
-                        ((Main) getActivity()).myStopService();
+                        ((Main) getActivity()).StopService();
                 }
             });
         } else {
             ToggleButton TB = (ToggleButton) v.findViewById(R.id.toggleButton);
-            if(((Main) getActivity()).isMyServiceRunning(NotificationService.class))
+            if (((Main) getActivity()).isMyServiceRunning(NotificationService.class))
                 TB.setChecked(true);
             TB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked)
-                        ((Main) getActivity()).myStartService();
+                        ((Main) getActivity()).StartService();
                     else
-                        ((Main) getActivity()).myStopService();
+                        ((Main) getActivity()).StopService();
                 }
             });
         }
+
         TextView tvChosenSound = (TextView) v.findViewById(R.id.tvChosenSound);
         Uri ChosenSoundUri = RingtoneManager.getActualDefaultRingtoneUri(
                 getActivity().getApplicationContext(), RingtoneManager.TYPE_RINGTONE);
         Cursor returnCursor =
                 getActivity().getContentResolver().query(ChosenSoundUri, null, null, null, null);
+        assert returnCursor != null;
         int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
         returnCursor.moveToFirst();
-        tvChosenSound.setText(returnCursor.getString(nameIndex));
+        try {
+            tvChosenSound.setText(returnCursor.getString(nameIndex));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        returnCursor.close();
 
         return v;
+    }
+
+
+    @Override
+    public void onResume() {
+        ((Main) getActivity()).recover_notification_fragment();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        ((Main) getActivity()).SaveState();
+        super.onPause();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        if (getActivity().getIntent().getIntExtra("Open_Notification_settings", 0) == 2) {
+            ((Main) getActivity()).LoadState();
+        }
+        super.onActivityCreated(savedInstanceState);
     }
 
 }

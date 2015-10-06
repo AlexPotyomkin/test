@@ -21,4 +21,10 @@ public class StartFragment extends Fragment {
         });
         return v;
     }
+
+    @Override
+    public void onResume() {
+        ((Main) getActivity()).recover_start_fragment();
+        super.onResume();
+    }
 }
