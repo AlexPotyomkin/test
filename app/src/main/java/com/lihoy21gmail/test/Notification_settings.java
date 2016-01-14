@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.text.GetChars;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -148,6 +149,7 @@ public class Notification_settings extends myFragments implements Observer {
                         try {
                             galleryPic = MediaStore.Images.Media.getBitmap( getActivity().
                                     getContentResolver(), data.getData());
+                            galleryPic = scaleDownBitmap(galleryPic,96, getContext());
                             mModel.setInnerBitmap(galleryPic);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -204,7 +206,6 @@ public class Notification_settings extends myFragments implements Observer {
             ImageView ivNotificationIco = (ImageView) getActivity().
                     findViewById(R.id.ivNotificationIco);
             Bitmap galleryPic = mModel.getInnerBitmap();
-            galleryPic = scaleDownBitmap(galleryPic, 64, getContext());
             ivNotificationIco.setImageBitmap(galleryPic);
         }
 
@@ -340,7 +341,6 @@ public class Notification_settings extends myFragments implements Observer {
 
         if (mModel.getInnerBitmap() != null) {
             Bitmap galleryPic = mModel.getInnerBitmap();
-            galleryPic = scaleDownBitmap(galleryPic, 64, getContext());
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             galleryPic.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteArray = stream.toByteArray();
