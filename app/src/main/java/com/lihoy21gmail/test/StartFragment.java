@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class StartFragment extends Fragment {
+public class StartFragment extends Fragment{
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -23,8 +24,16 @@ public class StartFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        ((Main) getActivity()).recover_start_fragment();
-        super.onResume();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        int SomeInt = getArguments().getInt("someInt", 0);
+    }
+
+    public static StartFragment newInstance(int someInt) {
+        StartFragment startFragment = new StartFragment();
+        Bundle args = new Bundle();
+        args.putInt("someInt", someInt);
+        startFragment.setArguments(args);
+        return startFragment;
     }
 }
