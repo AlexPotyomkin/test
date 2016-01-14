@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.support.v4.app.Fragment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,27 +38,17 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.StringTokenizer;
 
-public class Notification_settings extends Fragment implements Observer {
+public class Notification_settings extends myFragments implements Observer {
     private static final String TAG = "myLogs";
     static final int PICK_IMAGE_REQUEST = 1;
     static final int PICK_RINGTONE_REQUEST = 2;
     private Model mModel;
     private Intent ServiceIntent;
 
-    public static Notification_settings newInstance(int someInt) {
-        Notification_settings Notification_settings_fragment =
-                new Notification_settings();
-        Bundle args = new Bundle();
-        args.putInt("someInt", someInt);
-        Notification_settings_fragment.setArguments(args);
-        return Notification_settings_fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ServiceIntent = new Intent(getContext(), NotificationService.class);
-        int SomeInt = getArguments().getInt("someInt", 0);
     }
 
     @Override
