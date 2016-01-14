@@ -54,7 +54,7 @@ public class NotificationService extends Service {
     void sendNotification(Intent intent) {
         Context context = getApplicationContext();
         Intent notificationIntent = new Intent(context, Main.class);
-        notificationIntent.putExtra("Open_Notification_settings", 2);
+        notificationIntent.putExtra("Open_Notification_settings", 1);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         Resources res = context.getResources();
         NotificationManager notificationManager = (NotificationManager) context
